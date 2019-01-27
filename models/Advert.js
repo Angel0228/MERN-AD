@@ -17,19 +17,36 @@ const AdvertSchema = new Schema({
     required: true
   },
   creator: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
+    ref: "users"
   },
   creationdate: {
     type: Date,
-    required: true
+    default: Date.now
   },
   avatar: {
     type: String
   },
   status: {
-    type: String
-  }
+    type: String,
+    default: "Active"
+  },
+  comments: [
+    {
+      userID: {
+        type: Schema.Types.ObjectId,
+        ref: "users"
+      },
+      text: {
+        type: String,
+        required: true
+      },
+      creationdate: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ]
 });
 
 module.exports = Advert = mongoose.model("advert", AdvertSchema);

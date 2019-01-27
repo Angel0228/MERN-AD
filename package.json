@@ -8,6 +8,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongoose": "^5.4.6",
+    "gravatar": "^1.8.0",
     "validator": "^10.11.0"
   },
   "devDependencies": {
