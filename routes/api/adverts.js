@@ -7,6 +7,7 @@ const validateAdvertInput = require("../../validation/advert");
 
 //Load Advert Model
 const Advert = require("../../models/Advert");
+//Load Belong Model
 const Belong = require("../../models/Belong");
 
 // @route   GET api/adverts
@@ -53,7 +54,7 @@ router.post("/create", (req, res) => {
           d: "mm"
         });
 
-        let creator = "5c4db3211c9d4400004af1cf";
+        let creator = "5c4db39a1c9d4400004af1d0";
 
         const newAdvert = new Advert({
           title: req.body.title,

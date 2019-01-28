@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 //Routes Define
 const adverts = require("./routes/api/adverts");
+const users = require("./routes/api/users");
 
 const app = express();
 
@@ -22,6 +23,7 @@ mongoose
 
 // Use Routes
 app.use("/api/adverts", adverts);
+app.use("/api/users", users);
 
 const port = process.env.PORT || 5500;
 
