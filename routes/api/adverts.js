@@ -15,6 +15,7 @@ const Belong = require("../../models/Belong");
 // @Access  Public
 router.get("/", (req, res) => {
   Advert.find()
+    .populate("creator", ["username"])
     .sort({ date: -1 })
     .then(adverts => res.json(adverts))
     .catch(err => res.status(404).jjson({ noadfound: "No adverts found" }));
