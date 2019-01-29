@@ -12,7 +12,7 @@ class AdvertItem extends Component {
           <div align="center">
             <img src={advert.avatar} alt="" className="rounded-circle" />
           </div>
-          <Link to={`/advert/${advert._id}`} className="text-dark">
+          <Link to={`/advert/detail/${advert._id}`} className="text-dark">
             <h3>{advert.title}</h3>
           </Link>
           <p>{advert.description}</p>
@@ -25,7 +25,10 @@ class AdvertItem extends Component {
             </Col>
             <Col xs="4" />
             <Col xs="4" align="right">
-              <Link to="/profile" className="text-dark">
+              <Link
+                to={`/users/${advert.creator && advert.creator._id}`}
+                className="text-dark"
+              >
                 <span>
                   <strong>{advert.creator.username}</strong>
                 </span>

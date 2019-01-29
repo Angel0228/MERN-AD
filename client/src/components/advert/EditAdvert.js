@@ -15,10 +15,13 @@ import {
 } from "reactstrap";
 
 import TextFieldGroup from "../../common/TextFieldGroup";
-import { getCategories } from "../../actions/categoryActions";
-import { createAdvert } from "../../actions/advertActions";
+import {
+  getCategories,
+  getCategoriesById
+} from "../../actions/categoryActions";
+import { updateAdvert, getAdvertById } from "../../actions/advertActions";
 
-class CreateAdvert extends Component {
+class EditAdvert extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +46,11 @@ class CreateAdvert extends Component {
       description: this.state.description
     };
 
-    this.props.createAdvert(advertData, this.props.history);
+    this.props.updateAdvert(
+      this.props.match.params.id,
+      advertData,
+      this.props.history
+    );
   }
 
   onChange(e) {
@@ -69,10 +76,38 @@ class CreateAdvert extends Component {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
+
+    if (nextProps.advert.advert) {
+      const advert = nextProps.advert.advert;
+
+      //Set component fields state
+      this.setState({
+        title: advert.title,
+        price: advert.price,
+        description: advert.description
+      });
+    }
+
+    if (nextProps.category.category) {
+      const category = nextProps.category.category;
+      let categoryItems = [];
+      if (category && category.length > 0) {
+        category.map(category => categoryItems.push(category.categoryType));
+        this.setState({
+          category: categoryItems
+        });
+      } else {
+        this.setState({
+          category: []
+        });
+      }
+    }
   }
 
   componentDidMount() {
     this.props.getCategories();
+    this.props.getAdvertById(this.props.match.params.id);
+    this.props.getCategoriesById(this.props.match.params.id);
   }
 
   render() {
@@ -81,6 +116,7 @@ class CreateAdvert extends Component {
     let categoryItems;
     console.log(this.state.category);
     if (categories && categories.length > 0) {
+      console.log(categories);
       categoryItems = categories.map(category => (
         <Col md={6} key={category._id}>
           <FormGroup check>
@@ -108,7 +144,7 @@ class CreateAdvert extends Component {
             <Link to="/" className="btn btn-light">
               Go Back
             </Link>
-            <h1 className="display-4 text-center">Anzeige erstellen</h1>
+            <h1 className="display-4 text-center">Anzeige editieren</h1>
           </Col>
         </Row>
         <Row>
@@ -155,7 +191,7 @@ class CreateAdvert extends Component {
   }
 }
 
-CreateAdvert.propTypes = {
+EditAdvert.propTypes = {
   advert: PropTypes.object.isRequired,
   category: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
@@ -169,5 +205,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getCategories, createAdvert }
-)(withRouter(CreateAdvert));
+  { getCategories, updateAdvert, getAdvertById, getCategoriesById }
+)(withRouter(EditAdvert));

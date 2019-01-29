@@ -33,9 +33,9 @@ const AdvertSchema = new Schema({
   },
   comments: [
     {
-      userID: {
-        type: Schema.Types.ObjectId,
-        ref: "users"
+      userName: {
+        type: String,
+        required: true
       },
       text: {
         type: String,

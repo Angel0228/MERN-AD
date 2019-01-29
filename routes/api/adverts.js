@@ -4,6 +4,7 @@ const gravatar = require("gravatar");
 
 //Load Input Validation
 const validateAdvertInput = require("../../validation/advert");
+const validateCommentInput = require("../../validation/comment");
 
 //Load Advert Model
 const Advert = require("../../models/Advert");
@@ -16,7 +17,7 @@ const Belong = require("../../models/Belong");
 router.get("/", (req, res) => {
   Advert.find()
     .populate("creator", ["username"])
-    .sort({ date: -1 })
+    .sort({ creationdate: -1 })
     .then(adverts => res.json(adverts))
     .catch(err => res.status(404).jjson({ noadfound: "No adverts found" }));
 });
@@ -26,6 +27,8 @@ router.get("/", (req, res) => {
 // @Access  Public
 router.get("/:id", (req, res) => {
   Advert.findById(req.params.id)
+    .populate("creator", ["username"])
+    .sort({ "comments.creationdate": 1 })
     .then(advert => res.json(advert))
     .catch(err =>
       res.status(404).json({ noadfound: "No advert found with that ID" })
@@ -88,7 +91,7 @@ router.post("/create", (req, res) => {
     .catch(err => console.log(err));
 });
 
-// @route   PUT api/adverts/update:ad_id
+// @route   PUT api/adverts/update/:ad_id
 // @desc    Update Advert route
 // @Access  Public
 
@@ -131,6 +134,66 @@ router.put("/update/:ad_id", (req, res) => {
         .catch(err => console.log(err));
     })
     .catch(err => console.log(err));
+});
+
+// @route   PUT api/adverts/status/:ad_id
+// @desc    Update Advert Status to Sold out route
+// @Access  Public
+
+router.put("/status/:ad_id", (req, res) => {
+  //Get advertData for Updating
+  const advertData = {};
+
+  advertData.status = "soldout";
+
+  Advert.findOneAndUpdate(
+    { _id: req.params.ad_id },
+    { $set: advertData },
+    { new: true }
+  )
+    .then(advert => {
+      res.json(advert);
+    })
+    .catch(err => console.log(err));
+});
+
+// @route   POST api/adverts/comment/:username
+// @desc    Creating Advert comment route
+// @Access  Public
+router.post("/comment/:id", (req, res) => {
+  let userName = "John001";
+
+  const { errors, isValid } = validateCommentInput(req.body);
+
+  //Check Validation
+  if (!isValid) {
+    //If any errors, send 400 with errors object
+    return res.status(400).json(errors);
+  }
+
+  Advert.findById(req.params.id)
+    .then(advert => {
+      const newComment = {
+        text: req.body.comment,
+        userName
+      };
+
+      //Add to comments array
+      advert.comments.unshift(newComment);
+
+      //Save
+      advert.save().then(advert => res.json(advert));
+    })
+    .catch(err => res.status(404).json({ advertnotfound: "No advert found" }));
+});
+
+// @route   DELETE api/adverts/delete/:id
+// @desc    Delete advert by Id
+// @Access  Private
+router.delete("/delete/:id", (req, res) => {
+  Advert.findOneAndRemove({ _id: req.params.id }).then(() => {
+    res.json({ success: true });
+  });
 });
 
 module.exports = router;

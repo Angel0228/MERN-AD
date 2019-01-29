@@ -2,7 +2,8 @@ import {
   ADD_ADVERT,
   GET_ADVERTS,
   GET_ADVERT,
-  ADVERT_LOADING
+  ADVERT_LOADING,
+  ADD_COMMENTTOADVERT
 } from "../actions/types";
 
 const initialState = {
@@ -34,6 +35,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         adverts: [action.payload, ...state.adverts]
+      };
+    case ADD_COMMENTTOADVERT:
+      return {
+        ...state,
+        advert: action.payload
       };
     default:
       return state;

@@ -1,22 +1,20 @@
-import { GET_USER, USER_LOADING } from "../actions/types";
+import { GET_CATEGORY, GET_CATEGORIES } from "../actions/types";
 
 const initialState = {
-  userprofile: [],
-  loading: false
+  categories: []
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case USER_LOADING:
+    case GET_CATEGORIES:
       return {
         ...state,
-        loading: true
+        categories: action.payload
       };
-    case GET_USER:
+    case GET_CATEGORY:
       return {
         ...state,
-        userprofile: action.payload,
-        loading: false
+        category: action.payload
       };
     default:
       return state;
